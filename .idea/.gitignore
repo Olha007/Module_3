@@ -6,3 +6,14 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# Ігнорувати всі .class файли
+*.class
+
+# Ігнорувати тимчасові папки IDE (наприклад, IntelliJ IDEA)
+.idea/
+*.iml
+# Ігнорувати папку з скомпільованими файлами
+out/
+build/
+# Ігнорувати системні файли macOS
+.DS_Store
