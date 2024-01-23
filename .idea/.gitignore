@@ -6,8 +6,6 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-# Ігнорувати тимчасові папки IDE (наприклад, IntelliJ IDEA)
-.idea/
 *.iml
 # Ігнорувати папку з скомпільованими файлами
 out/
