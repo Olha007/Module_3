@@ -24,13 +24,14 @@ public class Test extends JFrame {
     public Test() {
         setTitle("Testing");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 600);
+        setSize(700, 300);
+        setLocationRelativeTo(null); // Встановлено положення форми по центру
 
         JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
 
         // Питання 1
         JLabel questionOne = new JLabel("<html>1. What programming language are you learning?</html>");
-        questionOne.setPreferredSize(new Dimension(300, 50));
+        JPanel answersPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         ButtonGroup answerGroup1 = new ButtonGroup();
         JRadioButton answer1A = new JRadioButton("A) Java");
         JRadioButton answer1B = new JRadioButton("B) Python");
@@ -38,10 +39,13 @@ public class Test extends JFrame {
         answerGroup1.add(answer1A);
         answerGroup1.add(answer1B);
         answerGroup1.add(answer1C);
+        answersPanel1.add(answer1A);
+        answersPanel1.add(answer1B);
+        answersPanel1.add(answer1C);
 
         // Питання 2
         JLabel questionSecond = new JLabel("<html>2. Which operating system do you prefer?</html>");
-        questionSecond.setPreferredSize(new Dimension(300, 50));
+        JPanel answersPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         ButtonGroup answerGroup2 = new ButtonGroup();
         JRadioButton answer2A = new JRadioButton("A) Windows");
         JRadioButton answer2B = new JRadioButton("B) macOS");
@@ -49,14 +53,19 @@ public class Test extends JFrame {
         answerGroup2.add(answer2A);
         answerGroup2.add(answer2B);
         answerGroup2.add(answer2C);
+        answersPanel2.add(answer2A);
+        answersPanel2.add(answer2B);
+        answersPanel2.add(answer2C);
 
         // Питання 3
         JLabel questionThird = new JLabel("<html>3. What programming languages do you consider mandatory to learn?</html>");
-        questionThird.setPreferredSize(new Dimension(300, 50));
+        JPanel answersPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JCheckBox answer3A = new JCheckBox("A) Java");
         JCheckBox answer3B = new JCheckBox("B) Python");
         JCheckBox answer3C = new JCheckBox("C) JavaScript");
-
+        answersPanel3.add(answer3A);
+        answersPanel3.add(answer3B);
+        answersPanel3.add(answer3C);
 
         JButton checkButton = new JButton("Check the answers");
         JLabel result = new JLabel();
@@ -87,17 +96,12 @@ public class Test extends JFrame {
         });
 
         panel.add(questionOne);
-        panel.add(answer1A);
-        panel.add(answer1B);
-        panel.add(answer1C);
+        panel.add(questionOne);
+        panel.add(answersPanel1);
         panel.add(questionSecond);
-        panel.add(answer2A);
-        panel.add(answer2B);
-        panel.add(answer2C);
+        panel.add(answersPanel2);
         panel.add(questionThird);
-        panel.add(answer3A);
-        panel.add(answer3B);
-        panel.add(answer3C);
+        panel.add(answersPanel3);
         panel.add(checkButton);
         panel.add(result);
 

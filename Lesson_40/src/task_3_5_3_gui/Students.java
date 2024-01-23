@@ -17,8 +17,6 @@ package task_3_5_3_gui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
@@ -37,6 +35,7 @@ public class Students extends JFrame {
         setTitle("Студенти");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
+        setLocationRelativeTo(null);
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("Прізвище");
@@ -47,36 +46,16 @@ public class Students extends JFrame {
         table = new JTable(tableModel);
 
         JButton addButton = new JButton("Додати");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addStudent();
-            }
-        });
+        addButton.addActionListener(e -> addStudent()); // Лямбда-вираз
 
         JButton editButton = new JButton("Редагувати");
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editStudent();
-            }
-        });
+        editButton.addActionListener(e -> editStudent()); // Лямбда-вираз
 
         JButton deleteButton = new JButton("Видалити");
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteStudent();
-            }
-        });
+        deleteButton.addActionListener(e -> deleteStudent()); // Лямбда-вираз
 
         JButton saveButton = new JButton("Зберегти в CSV");
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveToCSV();
-            }
-        });
+        saveButton.addActionListener(e -> saveToCSV()); // Лямбда-вира
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
@@ -89,106 +68,39 @@ public class Students extends JFrame {
     }
 
     private void addStudent() {
-        JDialog dialog = new JDialog(this, "Додати студента", true);
-        dialog.setSize(300, 200);
-        dialog.setLayout(new GridLayout(5, 2));
-
-        JLabel lastNameLabel = new JLabel("Прізвище:");
-        JTextField lastNameField = new JTextField();
-        JLabel firstNameLabel = new JLabel("Ім'я:");
-        JTextField firstNameField = new JTextField();
-        JLabel birthDateLabel = new JLabel("Дата народження:");
-        JTextField birthDateField = new JTextField();
-        JLabel specialtyLabel = new JLabel("Спеціальність:");
-        JTextField specialtyField = new JTextField();
+        JDialog dialog = createStudentDialog("Додати студента");
+        dialog.setLocationRelativeTo(this);
 
         JButton addButton = new JButton("Додати");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String lastName = lastNameField.getText();
-                String firstName = firstNameField.getText();
-                String birthDateText = birthDateField.getText();
-                String specialty = specialtyField.getText();
-
-                // Перевірка валідності дати народження
-                try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    Date birthDate = dateFormat.parse(birthDateText);
-
-                    // Перевірка віку у діапазоні 16-27 років
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(birthDate);
-                    int age = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
-
-                    if (age < 16 || age > 27) {
-                        JOptionPane.showMessageDialog(dialog, "Невалідний вік. Дозволено вік від 16 до 27 років");
-                        return;
-                    }
-                } catch (ParseException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Невалідна дата народження. Використовуйте формат yyyy-MM-dd");
-                    return;
-                }
-
-                tableModel.addRow(new Object[]{lastName, firstName, birthDateText, specialty});
-                dialog.dispose();
-            }
+        addButton.addActionListener(e -> {
+            processStudentData(dialog, false, -1);
         });
 
-        dialog.add(lastNameLabel);
-        dialog.add(lastNameField);
-        dialog.add(firstNameLabel);
-        dialog.add(firstNameField);
-        dialog.add(birthDateLabel);
-        dialog.add(birthDateField);
-        dialog.add(specialtyLabel);
-        dialog.add(specialtyField);
-        dialog.add(new JLabel());
         dialog.add(addButton);
-
         dialog.setVisible(true);
     }
-
 
     private void editStudent() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
-            JDialog dialog = new JDialog(this, "Редагувати студента", true);
-            dialog.setSize(300, 200);
-            dialog.setLayout(new GridLayout(5, 2));
+            JDialog dialog = createStudentDialog("Редагувати студента");
+            JTextField lastNameField = (JTextField) dialog.getContentPane().getComponent(1);
+            JTextField firstNameField = (JTextField) dialog.getContentPane().getComponent(3);
+            JTextField birthDateField = (JTextField) dialog.getContentPane().getComponent(5);
+            JTextField specialtyField = (JTextField) dialog.getContentPane().getComponent(7);
 
-            JLabel lastNameLabel = new JLabel("Прізвище:");
-            JTextField lastNameField = new JTextField(tableModel.getValueAt(selectedRow, 0).toString());
-            JLabel firstNameLabel = new JLabel("Ім'я:");
-            JTextField firstNameField = new JTextField(tableModel.getValueAt(selectedRow, 1).toString());
-            JLabel birthDateLabel = new JLabel("Дата народження:");
-            JTextField birthDateField = new JTextField(tableModel.getValueAt(selectedRow, 2).toString());
-            JLabel specialtyLabel = new JLabel("Спеціальність:");
-            JTextField specialtyField = new JTextField(tableModel.getValueAt(selectedRow, 3).toString());
+            lastNameField.setText(tableModel.getValueAt(selectedRow, 0).toString());
+            firstNameField.setText(tableModel.getValueAt(selectedRow, 1).toString());
+            birthDateField.setText(tableModel.getValueAt(selectedRow, 2).toString());
+            specialtyField.setText(tableModel.getValueAt(selectedRow, 3).toString());
 
             JButton editButton = new JButton("Редагувати");
-            editButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tableModel.setValueAt(lastNameField.getText(), selectedRow, 0);
-                    tableModel.setValueAt(firstNameField.getText(), selectedRow, 1);
-                    tableModel.setValueAt(birthDateField.getText(), selectedRow, 2);
-                    tableModel.setValueAt(specialtyField.getText(), selectedRow, 3);
-                    dialog.dispose();
-                }
+            dialog.setLocationRelativeTo(this);
+            editButton.addActionListener(e -> {
+                processStudentData(dialog, true, selectedRow);
             });
 
-            dialog.add(lastNameLabel);
-            dialog.add(lastNameField);
-            dialog.add(firstNameLabel);
-            dialog.add(firstNameField);
-            dialog.add(birthDateLabel);
-            dialog.add(birthDateField);
-            dialog.add(specialtyLabel);
-            dialog.add(specialtyField);
-            dialog.add(new JLabel());
             dialog.add(editButton);
-
             dialog.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Виберіть студента для редагування");
@@ -220,14 +132,65 @@ public class Students extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Students app = new Students();
-                app.setVisible(true);
+    private JDialog createStudentDialog(String title) {
+        JDialog dialog = new JDialog(this, title, true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(5, 2));
+
+        dialog.add(new JLabel("Прізвище:"));
+        dialog.add(new JTextField());
+        dialog.add(new JLabel("Ім'я:"));
+        dialog.add(new JTextField());
+        dialog.add(new JLabel("Дата народження:"));
+        dialog.add(new JTextField());
+        dialog.add(new JLabel("Спеціальність:"));
+        dialog.add(new JTextField());
+        dialog.add(new JLabel());
+
+        return dialog;
+    }
+
+    private void processStudentData(JDialog dialog, boolean isEdit, int selectedRow) {
+        JTextField lastNameField = (JTextField) dialog.getContentPane().getComponent(1);
+        JTextField firstNameField = (JTextField) dialog.getContentPane().getComponent(3);
+        JTextField birthDateField = (JTextField) dialog.getContentPane().getComponent(5);
+        JTextField specialtyField = (JTextField) dialog.getContentPane().getComponent(7);
+
+        String lastName = lastNameField.getText();
+        String firstName = firstNameField.getText();
+        String birthDateText = birthDateField.getText();
+        String specialty = specialtyField.getText();
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthDate = dateFormat.parse(birthDateText);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(birthDate);
+            int age = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
+
+            if (age < 16 || age > 27) {
+                JOptionPane.showMessageDialog(dialog, "Невалідний вік. Дозволено вік від 16 до 27 років");
+                return;
             }
-        });
+
+            if (isEdit) {
+                tableModel.setValueAt(lastName, selectedRow, 0);
+                tableModel.setValueAt(firstName, selectedRow, 1);
+                tableModel.setValueAt(birthDateText, selectedRow, 2);
+                tableModel.setValueAt(specialty, selectedRow, 3);
+            } else {
+                tableModel.addRow(new Object[]{lastName, firstName, birthDateText, specialty});
+            }
+
+            dialog.dispose();
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(dialog, "Невалідна дата народження. Використовуйте формат yyyy-MM-dd");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Students().setVisible(true));
     }
 }
 
